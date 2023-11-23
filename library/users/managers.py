@@ -1,14 +1,22 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.db.models import Model
 
 
 class CustomUserManager(BaseUserManager):
     """
-    Custom user model manager
+    Менеджер создания переопределённог опользователя.
     """
-    def create_user(self, username, email, password, **extra_fields):
+    def create_user(
+            self,
+            username: str,
+            email: str,
+            password: str,
+            **extra_fields
+    ) -> Model:
         """
-        Create and save a user with the given username, email and password.
+        Создаёт и сохраняет пользователя
+        с именем, электронной почтой и паролем.
         """
         if not username:
             raise ValueError(_("The Username must be set"))
@@ -21,10 +29,16 @@ class CustomUserManager(BaseUserManager):
         user.save()
         return user
 
-    def create_superuser(self, username,  email, password, **extra_fields):
+    def create_superuser(
+            self,
+            username: str,
+            email: str,
+            password: str,
+            **extra_fields
+    ) -> Model:
         """
-        Create and save a SuperUser with the
-        given username, email and password.
+        Создаёт и сохраняет суперпользователя
+        с именем, электронной почтой и паролем.
         """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)

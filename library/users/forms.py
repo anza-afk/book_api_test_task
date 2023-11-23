@@ -4,14 +4,14 @@ from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
-
+    """Форма создания переопределённого пользователя для админ панели"""
     class Meta:
         model = CustomUser
         fields = ('username', 'email',)
 
 
 class CustomUserChangeForm(UserChangeForm):
-
+    """Форма редактирования переопределённого пользователя для админ панели"""
     class Meta:
         model = CustomUser
         fields = ('username', 'email',)
