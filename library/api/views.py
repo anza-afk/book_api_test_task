@@ -32,7 +32,7 @@ class CreateUserView(CreateAPIView):
         print(user.email)
         send_hello_email_task.delay(
             username=user.username,
-            email=user.emil,
+            email=user.email,
         )
         headers = self.get_success_headers(serializer.data)
         return Response(
