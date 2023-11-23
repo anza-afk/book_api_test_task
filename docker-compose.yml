@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    entrypoint: /entrypoint.sh
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    expose:
+      - 8000
+    volumes:
+      - dbdata:/var/lib/mysql/
+
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    env_file:
+      - ./.env
+    volumes:
+      - dbdata:/var/lib/mysql/
+
+  celery:
+    restart: always
+    build:
+      context: .
+    command: ['celery', '-A', 'library', 'worker', '-l', 'info']
+    env_file:
+      - ./.env
+    depends_on:
+      - web
+      - redis
+    volumes:
+      - dbdata:/var/lib/mysql/
+
+  redis:
+    restart: unless-stopped
+    image: redis:latest
+    env_file:
+      - ./.env
+    expose:
+      - "${REDIS_PORT}"
+
+volumes:
+  dbdata:
