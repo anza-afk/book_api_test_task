@@ -1,19 +1,21 @@
-version: "3.8"
+version: "3.9"
 
 services:
   web:
     build: .
     entrypoint: /entrypoint.sh
+    restart: on-failure:10
     env_file:
       - ./.env
-    depends_on:
-      - db
     ports:
       - "8000:8000"
     expose:
       - 8000
     volumes:
       - dbdata:/var/lib/mysql/
+    depends_on:
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:latest
@@ -29,6 +31,10 @@ services:
       - ./.env
     volumes:
       - dbdata:/var/lib/mysql/
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 20s
+      retries: 10
 
   celery:
     restart: always
@@ -37,11 +43,11 @@ services:
     command: ['celery', '-A', 'library', 'worker', '-l', 'info']
     env_file:
       - ./.env
+    volumes:
+      - dbdata:/var/lib/mysql/
     depends_on:
       - web
       - redis
-    volumes:
-      - dbdata:/var/lib/mysql/
 
   redis:
     restart: unless-stopped
