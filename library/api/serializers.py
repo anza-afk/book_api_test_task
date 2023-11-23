@@ -5,14 +5,14 @@ from users.models import CustomUser
 
 
 class BookSerializer(serializers.ModelSerializer):
-
+    """Сериализатор модели книги"""
     class Meta:
         model = Book
         fields = '__all__'
 
 
 class CustomUserSerializer(serializers.ModelSerializer):
-
+    """Сериализатор модели переопределённог опользователя."""
     password = serializers.CharField(write_only=True)
 
     def create(self, validated_data):

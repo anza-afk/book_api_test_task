@@ -8,6 +8,9 @@ from users.managers import CustomUserManager
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
+    """
+    Модель переопределённого пльзователя.
+    """
     email = models.EmailField(_('email address'), unique=True)
     username = models.CharField(
         _('username'),
@@ -32,4 +35,4 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     objects = CustomUserManager()
 
     def __str__(self):
-        return self.email
+        return f'{self.username}, {self.email}'

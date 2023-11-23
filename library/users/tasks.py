@@ -5,9 +5,8 @@ from django.core.mail import send_mail
 
 
 @shared_task()
-def send_hello_email_task(username, email):
-
-    """Sends an email when neww user regitered."""
+def send_hello_email_task(username: str, email: str) -> None:
+    """Отправка письма при создании нового пользователя."""
     send_mail(
         subject="Успешная регистрация.",
         message=f"Перивет, {username}\nСпасибо за регистрацию!",
